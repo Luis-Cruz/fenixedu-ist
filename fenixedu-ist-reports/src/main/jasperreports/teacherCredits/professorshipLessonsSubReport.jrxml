@@ -25,7 +25,7 @@
 
 
 	<field name="occurrenceWeeksAsString" class="java.lang.String"/>
-	<field name="diaSemana" class="org.fenixedu.academic.util.DiaSemana"/>
+	<field name="diaSemana" class="java.time.DayOfWeek"/>
 	<field name="beginHourMinuteSecond" class="org.fenixedu.academic.util.HourMinuteSecond"/>
 	<field name="endHourMinuteSecond" class="org.fenixedu.academic.util.HourMinuteSecond"/>
 
@@ -87,7 +87,7 @@
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[org.fenixedu.academic.util.WeekDay.getWeekDay($F{diaSemana}).getLabelShort()+" "+$F{beginHourMinuteSecond}.toString("HH:mm")+" - "+$F{endHourMinuteSecond}.toString("HH:mm")]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[$F{diaSemana}.getDisplayName(java.time.format.TextStyle.SHORT, org.fenixedu.commons.i18n.I18N.getLocale())+" "+$F{beginHourMinuteSecond}.toString("HH:mm")+" - "+$F{endHourMinuteSecond}.toString("HH:mm")]]></textFieldExpression>
 				</textField>
 			</band>
 		</detail>

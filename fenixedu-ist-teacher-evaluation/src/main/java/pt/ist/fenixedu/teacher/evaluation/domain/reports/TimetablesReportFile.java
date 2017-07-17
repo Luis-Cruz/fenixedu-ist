@@ -19,6 +19,7 @@
 package pt.ist.fenixedu.teacher.evaluation.domain.reports;
 
 import java.io.IOException;
+import java.time.format.TextStyle;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,6 +33,7 @@ import org.fenixedu.academic.domain.ShiftType;
 import org.fenixedu.academic.domain.Teacher;
 import org.fenixedu.academic.domain.degree.DegreeType;
 import org.fenixedu.academic.domain.reports.GepReportFile;
+import org.fenixedu.commons.i18n.I18N;
 import org.fenixedu.commons.spreadsheet.Spreadsheet;
 import org.fenixedu.commons.spreadsheet.Spreadsheet.Row;
 
@@ -129,7 +131,7 @@ public class TimetablesReportFile extends TimetablesReportFile_Base {
                                 row.setCell(shiftType.getFullNameTipoAula());
 
                                 // Dia Semana
-                                row.setCell(lesson.getDiaSemana().getDiaSemanaString());
+                                row.setCell(lesson.getDiaSemana().getDisplayName(TextStyle.SHORT, I18N.getLocale()));
 
                                 // Hora Início
                                 row.setCell(lesson.getBeginHourMinuteSecond().toString());
@@ -188,7 +190,7 @@ public class TimetablesReportFile extends TimetablesReportFile_Base {
                                 row.setCell(shiftType.getFullNameTipoAula());
 
                                 // Dia Semana
-                                row.setCell(lesson.getDiaSemana().getDiaSemanaString());
+                                row.setCell(lesson.getDiaSemana().getDisplayName(TextStyle.SHORT, I18N.getLocale()));
 
                                 // Hora Início
                                 row.setCell(lesson.getBeginHourMinuteSecond().toString());

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Collection;
@@ -1817,7 +1818,7 @@ public class FenixAPIv1 {
                 assignedRoom = evalEnrolment.getRoom();
             }
 
-            if (type.equals(EvaluationType.EXAM_TYPE)) {
+            if (type.equals(EvaluationType.EXAM)) {
                 return new FenixCourseEvaluation.Exam(writtenEvaluationId, name, evaluationPeriod, isEnrolmentPeriod,
                         enrollmentPeriodStart, enrollmentPeriodEnd, writtenEvaluation.getAssociatedRooms(), isEnrolled,
                         Collections.singleton(executionCourse), assignedRoom);
@@ -1828,7 +1829,7 @@ public class FenixAPIv1 {
             }
         }
 
-        if (type.equals(EvaluationType.EXAM_TYPE)) {
+        if (type.equals(EvaluationType.EXAM)) {
             return new FenixCourseEvaluation.Exam(writtenEvaluationId, name, evaluationPeriod, isEnrolmentPeriod,
                     enrollmentPeriodStart, enrollmentPeriodEnd, writtenEvaluation.getAssociatedRooms(), isEnrolled,
                     Collections.singleton(executionCourse));
@@ -1961,7 +1962,7 @@ public class FenixAPIv1 {
             for (Object occupation : bodyComponent.getInfoShowOccupation()) {
                 InfoShowOccupation showOccupation = (InfoShowOccupation) occupation;
                 DateTime date = new DateTime(rightNow);
-                DateTime newDate = date.withDayOfWeek(showOccupation.getDiaSemana().getDiaSemanaInDayOfWeekJodaFormat());
+                DateTime newDate = date.withDayOfWeek(showOccupation.getDiaSemana().getValue());
                 String day = formatDay.print(newDate);
 
                 FenixRoomEvent roomEvent = null;
@@ -1972,7 +1973,7 @@ public class FenixAPIv1 {
 
                     String start = formatHour.print(lesson.getInicio().getTimeInMillis());
                     String end = formatHour.print(lesson.getFim().getTimeInMillis());
-                    String weekday = lesson.getDiaSemana().getDiaSemanaString();
+                    String weekday = lesson.getDiaSemana().getDisplayName(TextStyle.SHORT, I18N.getLocale());
 
                     FenixPeriod period = new FenixPeriod(day + " " + start, day + " " + end);
 
@@ -2000,7 +2001,7 @@ public class FenixAPIv1 {
                         InfoExam infoExam = (InfoExam) infoWrittenEvaluation;
                         start = infoExam.getBeginningHour();
                         end = infoExam.getEndHour();
-                        weekday = infoWrittenEvaluation.getDiaSemana().getDiaSemanaString();
+                        weekday = infoWrittenEvaluation.getDiaSemana().getDisplayName(TextStyle.SHORT, I18N.getLocale());
 
                         FenixPeriod period = new FenixPeriod(day + " " + start, day + " " + end);
 
@@ -2015,7 +2016,7 @@ public class FenixAPIv1 {
                         String description = infoWrittenTest.getDescription();
                         start = formatHour.print(infoWrittenTest.getInicio().getTimeInMillis());
                         end = formatHour.print(infoWrittenTest.getFim().getTimeInMillis());
-                        weekday = infoWrittenTest.getDiaSemana().getDiaSemanaString();
+                        weekday = infoWrittenTest.getDiaSemana().getDisplayName(TextStyle.SHORT, I18N.getLocale());
 
                         FenixPeriod period = new FenixPeriod(day + " " + start, day + " " + end);
 
@@ -2031,7 +2032,7 @@ public class FenixAPIv1 {
                     String title = infoGenericEvent.getTitle();
                     String start = formatHour.print(infoGenericEvent.getInicio().getTimeInMillis());
                     String end = formatHour.print(infoGenericEvent.getFim().getTimeInMillis());;
-                    String weekday = infoGenericEvent.getDiaSemana().getDiaSemanaString();
+                    String weekday = infoGenericEvent.getDiaSemana().getDisplayName(TextStyle.SHORT, I18N.getLocale());
                     FenixPeriod period = new FenixPeriod(day + " " + start, day + " " + end);
 
                     roomEvent = new FenixRoomEvent.GenericEvent(start, end, weekday, day, period, description, title);

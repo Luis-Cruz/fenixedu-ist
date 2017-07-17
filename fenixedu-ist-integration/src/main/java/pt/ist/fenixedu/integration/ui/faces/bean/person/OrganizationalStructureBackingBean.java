@@ -92,7 +92,7 @@ public class OrganizationalStructureBackingBean extends FenixBackingBean {
         Collections.reverse(result);
         if (getChoosenExecutionYearID() == null) {
             for (SelectItem selectExecutionYear : result) {
-                if (selectExecutionYear.getDescription().equals(PeriodState.CURRENT_CODE)) {
+                if (selectExecutionYear.getDescription().equals(PeriodState.CURRENT.name())) {
                     setChoosenExecutionYearID((String) selectExecutionYear.getValue());
                 }
             }

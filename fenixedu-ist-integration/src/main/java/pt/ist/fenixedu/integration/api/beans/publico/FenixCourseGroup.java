@@ -163,7 +163,7 @@ public class FenixCourseGroup {
         this.enrolmentPeriod = new FenixInterval(start, end);
 
         final EnrolmentGroupPolicyType enrolmentPolicy = grouping.getEnrolmentPolicy();
-        this.enrolmentPolicy = enrolmentPolicy == null ? null : enrolmentPolicy.getTypeFullName();
+        this.enrolmentPolicy = enrolmentPolicy == null ? null : enrolmentPolicy.name();
 
         this.minimumCapacity = grouping.getMinimumCapacity();
         this.maximumCapacity = grouping.getMaximumCapacity();

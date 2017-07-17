@@ -196,8 +196,8 @@ public class VigilantWrapper extends VigilantWrapper_Base {
 
         for (VigilantWrapper otherVigilant : this.getPerson().getVigilantWrappersSet()) {
             for (Vigilancy vigilancy : otherVigilant.getVigilanciesSet()) {
-                if (interval.overlaps(vigilancy.getWrittenEvaluation().getDurationInterval())) {
-                    if (vigilancy.getWrittenEvaluation().getDurationInterval().overlaps(interval)) {
+                if (interval.overlaps(getDurationInterval(vigilancy.getWrittenEvaluation()))) {
+                    if (getDurationInterval(vigilancy.getWrittenEvaluation()).overlaps(interval)) {
                         return Boolean.FALSE;
                     }
                 }
@@ -205,6 +205,10 @@ public class VigilantWrapper extends VigilantWrapper_Base {
         }
 
         return Boolean.TRUE;
+    }
+
+    private Interval getDurationInterval(final WrittenEvaluation we) {
+        return new Interval(we.getBeginningDateTime(), we.getEndDateTime());
     }
 
     public Teacher getTeacher() {

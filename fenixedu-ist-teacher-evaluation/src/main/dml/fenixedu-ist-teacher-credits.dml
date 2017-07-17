@@ -41,7 +41,7 @@ class SupportLesson  {
     HourMinuteSecond endTimeHourMinuteSecond;
     String place;
     HourMinuteSecond startTimeHourMinuteSecond;
-    DiaSemana weekDay;
+    DayOfWeek weekDay;
 }
 
 class teacher.Career  {
@@ -78,7 +78,7 @@ class teacher.DegreeProjectTutorialService extends teacher.TeacherServiceItem {
 class teacher.InstitutionWorkTime extends teacher.TeacherServiceItem {
     HourMinuteSecond endTimeHourMinuteSecond;
     HourMinuteSecond startTimeHourMinuteSecond;
-    WeekDay weekDay;
+    DayOfWeek weekDay;
 }
 
 class teacher.ReductionService extends teacher.TeacherServiceItem {

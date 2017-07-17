@@ -25,10 +25,11 @@ import java.util.Map;
 import org.fenixedu.academic.domain.ExecutionSemester;
 import org.fenixedu.academic.domain.FrequencyType;
 import org.fenixedu.academic.domain.space.SpaceUtils;
-import org.fenixedu.academic.util.DiaSemana;
+import java.time.DayOfWeek;
 import org.fenixedu.academic.util.HourMinuteSecond;
 import org.fenixedu.spaces.domain.Space;
 import org.joda.time.DateTime;
+import org.joda.time.DateTimeFieldType;
 
 public class WrittenTestsRoomManager extends HashSet<Space> {
 
@@ -50,7 +51,6 @@ public class WrittenTestsRoomManager extends HashSet<Space> {
         do {
             dateTime = evaluationRoomManager.getNextDateTime();
             oldRoom = evaluationRoomManager.getNextOldRoom();
-
         } while (SpaceUtils
                 .isFree(oldRoom, dateTime.toYearMonthDay(), dateTime.plusMinutes(120).toYearMonthDay(), new HourMinuteSecond(
                         dateTime.getHourOfDay(), dateTime.getMinuteOfHour(), dateTime.getSecondOfMinute()),
@@ -58,7 +58,7 @@ public class WrittenTestsRoomManager extends HashSet<Space> {
                                 .getHourOfDay(), dateTime.plusMinutes(119).getMinuteOfHour(), dateTime.plusMinutes(119)
                                 .getSecondOfMinute()) : new HourMinuteSecond(dateTime.plusMinutes(120).getHourOfDay(), dateTime
                                 .plusMinutes(120).getMinuteOfHour(), dateTime.plusMinutes(120).getSecondOfMinute()),
-                        new DiaSemana(dateTime.getDayOfWeek() + 1), FrequencyType.DAILY, Boolean.TRUE, Boolean.TRUE));
+                        DayOfWeek.of(dateTime.get(DateTimeFieldType.dayOfWeek())), FrequencyType.DAILY, Boolean.TRUE, Boolean.TRUE));
         return dateTime;
     }
 

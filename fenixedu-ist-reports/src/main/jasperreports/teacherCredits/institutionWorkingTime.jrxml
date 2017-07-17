@@ -25,7 +25,7 @@
 
 	<parameter name="executionPeriodName" isForPrompting="false" class="java.lang.String"/>
 
-	<field name="weekDay" class="org.fenixedu.academic.util.WeekDay"/>
+	<field name="weekDay" class="java.time.DayOfWeek"/>
 	<field name="startTime" class="java.util.Date"/>
 	<field name="endTime" class="java.util.Date"/>
 
@@ -139,7 +139,7 @@
 					<textElement verticalAlignment="Middle">
 						<font/>
 					</textElement>
-				<textFieldExpression   class="java.lang.String"><![CDATA[$F{weekDay}.getLabel()]]></textFieldExpression>
+				<textFieldExpression   class="java.lang.String"><![CDATA[org.fenixedu.academic.util.WeekDay.getLabel($F{weekDay})]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="HH.mm" isBlankWhenNull="false" evaluationTime="Now" hyperlinkType="None"  hyperlinkTarget="Self" >
 					<reportElement

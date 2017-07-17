@@ -18,6 +18,7 @@
  */
 package pt.ist.fenixedu.teacher.evaluation.domain.teacher;
 
+import java.time.DayOfWeek;
 import java.util.Date;
 
 import org.fenixedu.academic.domain.exceptions.DomainException;
@@ -34,7 +35,7 @@ import pt.ist.fenixframework.Atomic;
 
 public class InstitutionWorkTime extends InstitutionWorkTime_Base {
 
-    public InstitutionWorkTime(TeacherService teacherService, Date startTime, Date endTime, WeekDay weekDay) {
+    public InstitutionWorkTime(TeacherService teacherService, Date startTime, Date endTime, DayOfWeek weekDay) {
         super();
         if (teacherService == null || startTime == null || endTime == null || weekDay == null) {
             throw new DomainException("arguments can't be null");
@@ -50,7 +51,7 @@ public class InstitutionWorkTime extends InstitutionWorkTime_Base {
     private void log(final String key) {
         final StringBuilder log = new StringBuilder();
         log.append(BundleUtil.getString("resources.TeacherCreditsSheetResources", key));
-        log.append(getWeekDay().getLabel());
+        log.append(WeekDay.getLabel(getWeekDay()));
         log.append(" ");
         log.append(getStartTime().getHours());
         log.append(":");
@@ -85,7 +86,7 @@ public class InstitutionWorkTime extends InstitutionWorkTime_Base {
         log("label.teacher.schedule.institutionWorkTime.edit");
     }
 
-    public void update(WeekDay weekDay, Date startTime, Date endTime) {
+    public void update(DayOfWeek weekDay, Date startTime, Date endTime) {
         setWeekDay(weekDay);
         setStartTime(startTime);
         setEndTime(endTime);

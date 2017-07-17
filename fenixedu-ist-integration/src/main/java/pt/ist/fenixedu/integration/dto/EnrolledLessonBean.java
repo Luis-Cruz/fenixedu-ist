@@ -21,9 +21,11 @@
  */
 package pt.ist.fenixedu.integration.dto;
 
+import java.time.format.TextStyle;
 import java.util.Date;
 
 import org.fenixedu.academic.domain.Lesson;
+import org.fenixedu.commons.i18n.I18N;
 
 public class EnrolledLessonBean {
 
@@ -37,7 +39,7 @@ public class EnrolledLessonBean {
     public EnrolledLessonBean(final Lesson lesson) {
         setCourseAcronym(lesson.getExecutionCourse().getSigla());
         setLessonType(lesson.getShift().getShiftTypesCodePrettyPrint());
-        setWeekDay(lesson.getDiaSemana().getDiaSemanaString());
+        setWeekDay(lesson.getDiaSemana().getDisplayName(TextStyle.SHORT, I18N.getLocale()));
         setBegin(lesson.getBeginHourMinuteSecond().toDateTimeAtCurrentTime().toDate());
         setEnd(lesson.getEndHourMinuteSecond().toDateTimeAtCurrentTime().toDate());
         if (lesson.getRoomOccupation() != null) {

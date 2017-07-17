@@ -39,7 +39,7 @@ public class GenerateSpecialSeasonEnrolmentPaymentCodesAndEvents extends CronTas
 
         .filter(ee -> ee.getEvaluationSeason().isSpecial())
         
-        .filter(ee -> !ee.getEnrolmentEvaluationState().equals(EnrolmentEvaluationState.ANNULED_OBJ))
+        .filter(ee -> !ee.getEnrolmentEvaluationState().equals(EnrolmentEvaluationState.ANNULED))
         
         .filter(this::missingEvent)
 

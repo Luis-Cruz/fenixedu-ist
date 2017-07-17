@@ -25,7 +25,7 @@ import org.fenixedu.academic.domain.ExecutionSemester;
 import org.fenixedu.academic.domain.Professorship;
 import org.fenixedu.academic.domain.Teacher;
 import org.fenixedu.academic.domain.exceptions.DomainException;
-import org.fenixedu.academic.util.DiaSemana;
+import java.time.DayOfWeek;
 import org.fenixedu.academic.util.HourMinuteSecond;
 import org.fenixedu.academic.util.WeekDay;
 import org.fenixedu.bennu.core.domain.Bennu;
@@ -51,7 +51,7 @@ public class SupportLesson extends SupportLesson_Base {
 
                 @Override
                 public int compare(SupportLesson o1, SupportLesson o2) {
-                    int c = o1.getWeekDay().getDiaSemana().compareTo(o2.getWeekDay().getDiaSemana());
+                    int c = o1.getWeekDay().compareTo(o2.getWeekDay());
                     if (c == 0) {
                         c = o1.getStartTimeHourMinuteSecond().compareTo(o2.getStartTimeHourMinuteSecond());
                     }
@@ -60,7 +60,7 @@ public class SupportLesson extends SupportLesson_Base {
 
             };
 
-    public SupportLesson(Professorship professorship, WeekDay weekDay, HourMinuteSecond startTimeHourMinuteSecond,
+    public SupportLesson(Professorship professorship, DayOfWeek weekDay, HourMinuteSecond startTimeHourMinuteSecond,
             HourMinuteSecond endTimeHourMinuteSecond, String place) {
         super();
         setRootDomainObject(Bennu.getInstance());
@@ -69,15 +69,15 @@ public class SupportLesson extends SupportLesson_Base {
         addLog("label.teacher.schedule.supportLessons.create");
     }
 
-    public void edit(WeekDay weekDay, HourMinuteSecond startTimeHourMinuteSecond, HourMinuteSecond endTimeHourMinuteSecond,
+    public void edit(DayOfWeek weekDay, HourMinuteSecond startTimeHourMinuteSecond, HourMinuteSecond endTimeHourMinuteSecond,
             String place) {
         update(weekDay, startTimeHourMinuteSecond, endTimeHourMinuteSecond, place);
         addLog("label.teacher.schedule.supportLessons.change");
     }
 
-    private void update(WeekDay weekDay, HourMinuteSecond startTimeHourMinuteSecond, HourMinuteSecond endTimeHourMinuteSecond,
+    private void update(DayOfWeek weekDay, HourMinuteSecond startTimeHourMinuteSecond, HourMinuteSecond endTimeHourMinuteSecond,
             String place) {
-        setWeekDay(DiaSemana.fromJodaWeekDay(weekDay.ordinal() + 1));
+        setWeekDay(weekDay);
         setStartTimeHourMinuteSecond(startTimeHourMinuteSecond);
         setEndTimeHourMinuteSecond(endTimeHourMinuteSecond);
         setPlace(place);
@@ -164,9 +164,9 @@ public class SupportLesson extends SupportLesson_Base {
         }
     }
 
-    public WeekDay getWeekDayObject() {
-        final DiaSemana diaSemana = getWeekDay();
-        return diaSemana == null ? null : WeekDay.getWeekDay(diaSemana);
+    public DayOfWeek getWeekDayObject() {
+        final DayOfWeek dayOfWeek = getWeekDay();
+        return dayOfWeek;
     }
 
     private void addLog(String key) {
@@ -177,7 +177,7 @@ public class SupportLesson extends SupportLesson_Base {
         final StringBuilder log = new StringBuilder();
         log.append(BundleUtil.getString("resources.TeacherCreditsSheetResources", key));
 
-        log.append(WeekDay.getWeekDay(getWeekDay()).getLabel());
+        log.append(WeekDay.getLabel(getWeekDay()));
         log.append(" ");
         log.append(getStartTime().getHours());
         log.append(":");
