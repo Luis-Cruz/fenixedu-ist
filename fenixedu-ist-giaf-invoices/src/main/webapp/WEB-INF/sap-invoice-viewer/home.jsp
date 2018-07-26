@@ -279,7 +279,7 @@
                     .append($('<th/>').text('<spring:message code="label.sapRequest.sapDocumentNumber" text="Sap Document Number"/>'))
                     .append($('<th/>').text('<spring:message code="label.sapRequest.request" text="Request / Response"/>'))
                     .append($('<th/>').text('<spring:message code="label.sapRequest.clientId" text="clientId"/>'))
-                    .append($('<th/>').text(''))
+//                    .append($('<th/>').text(''))
                     ;
 			    $('<tr id="eventDetailRow' + i + '" style="display: none;"/>').appendTo($('#eventList'))
                     .append($('<td colspan="12"/>').html(sapTable));
@@ -299,7 +299,7 @@
 //                        .append($('<td/>').text(sapRequest.integrationMessage))
                         .append($('<td/>').text(sapRequest.clientId))
 //                        .append($('<td/>').text(sapRequest.integrationMessage))
-                        .append($('<td/>').html(deleteRequest(sapRequest)))
+//                        .append($('<td/>').html(deleteRequest(sapRequest)))
                         ;
 			    });
 			}
