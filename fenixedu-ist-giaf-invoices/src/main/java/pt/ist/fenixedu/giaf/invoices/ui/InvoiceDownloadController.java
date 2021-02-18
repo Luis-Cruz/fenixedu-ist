@@ -22,7 +22,6 @@ import com.google.common.io.ByteStreams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.fenixedu.academic.domain.Person;
 import org.fenixedu.academic.domain.accessControl.AcademicAuthorizationGroup;
 import org.fenixedu.academic.domain.accessControl.academicAdministration.AcademicOperationType;
 import org.fenixedu.academic.domain.accounting.Event;
@@ -40,9 +39,13 @@ import org.fenixedu.bennu.rendering.annotations.BennuIntersections;
 import org.fenixedu.bennu.spring.portal.SpringApplication;
 import org.fenixedu.bennu.spring.portal.SpringFunctionality;
 import org.fenixedu.commons.i18n.I18N;
+import org.fenixedu.connect.domain.Account;
+import org.fenixedu.connect.ui.AccountController;
+import org.fenixedu.connect.ui.BaseController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -91,13 +94,15 @@ public class InvoiceDownloadController {
     }
 
     @RequestMapping(value = "/{event}/documents", method = RequestMethod.GET)
-    public String listForEvent(@PathVariable Event event, final Model model, final HttpServletResponse response) {
-        if (isAllowedToAccess(event)) {
+    public String listForEvent(@PathVariable Event event, final Model model, final HttpServletResponse response,
+                               final @CookieValue(name = AccountController.ACCESS_TOKEN_COOKIE, required = false) String accessToken) {
+        final Account account = BaseController.requireAccount(accessToken);
+        if (isAllowedToAccess(event, account)) {
             final User user = Authenticate.getUser();
             model.addAttribute("isAcademicServiceStaff", Boolean.valueOf(isAcademicServiceStaff(user)));
             model.addAttribute("event", event);
             model.addAttribute("isInDebt", Boolean.valueOf(event.isInDebt()));
-            model.addAttribute("eventDetailsUrl", accessControlService.isEventOwner(event, Authenticate.getUser()) ?
+            model.addAttribute("eventDetailsUrl", accessControlService.isEventOwner(event, account) ?
                     ownerEventDetails(event): eventDetails(event));
 
             final JsonArray sapRequests = event.getSapRequestSet().stream()
@@ -191,8 +196,10 @@ public class InvoiceDownloadController {
     }
 
     @RequestMapping(value = "/giaf/{event}/{filename}", method = RequestMethod.GET, produces = "application/pdf")
-    public void giafInvoice(@PathVariable Event event, @PathVariable String filename, final HttpServletResponse response) {
-        if (isAllowedToAccess(event)) {
+    public void giafInvoice(@PathVariable Event event, @PathVariable String filename, final HttpServletResponse response,
+                            final @CookieValue(name = AccountController.ACCESS_TOKEN_COOKIE, required = false) String accessToken) {
+        final Account account = BaseController.requireAccount(accessToken);
+        if (isAllowedToAccess(event, account)) {
             final File file =  GiafEvent.receiptFile(event, filename);
             if (file != null && file.exists()) {
                 try (final FileInputStream inputStream = new FileInputStream(file)) {
@@ -209,8 +216,10 @@ public class InvoiceDownloadController {
     }
 
     @RequestMapping(value = "/sap/{sapRequest}/{filename}", method = RequestMethod.GET, produces = "application/pdf")
-    public void sapInvoice(@PathVariable SapRequest sapRequest, @PathVariable String filename, final HttpServletResponse response) {
-        if (isAllowedToAccess(sapRequest.getEvent())) {
+    public void sapInvoice(@PathVariable SapRequest sapRequest, @PathVariable String filename, final HttpServletResponse response,
+                           final @CookieValue(name = AccountController.ACCESS_TOKEN_COOKIE, required = false) String accessToken) {
+        final Account account = BaseController.requireAccount(accessToken);
+        if (isAllowedToAccess(sapRequest.getEvent(), account)) {
             final SapDocumentFile sapDocumentFile = sapRequest.getSapDocumentFile();
             if (sapDocumentFile == null) {
                 response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -233,10 +242,12 @@ public class InvoiceDownloadController {
     }
 
     @RequestMapping(value = "/sap/{sapRequest}/details", method = RequestMethod.GET)
-    public String sapInvoiceDetails(final @PathVariable SapRequest sapRequest, final Model model, final HttpServletResponse response) {
+    public String sapInvoiceDetails(final @PathVariable SapRequest sapRequest, final Model model, final HttpServletResponse response,
+                                    final @CookieValue(name = AccountController.ACCESS_TOKEN_COOKIE, required = false) String accessToken) {
         final Event event = sapRequest.getEvent();
-        if (isAllowedToAccess(event)) {
-            model.addAttribute("eventDetailsUrl", accessControlService.isEventOwner(event, Authenticate.getUser()) ?
+        final Account account = BaseController.requireAccount(accessToken);
+        if (isAllowedToAccess(event, account)) {
+            model.addAttribute("eventDetailsUrl", accessControlService.isEventOwner(event, account) ?
                     ownerEventDetails(event): eventDetails(event));
 
             model.addAttribute("sapRequest", sapRequest);
@@ -254,14 +265,12 @@ public class InvoiceDownloadController {
         return filename.endsWith(".pdf") ? filename : filename + ".pdf";
     }
 
-    private boolean isAllowedToAccess(final Event event) {
-        final User user = Authenticate.getUser();
-        return isOwner(event, user) || isAcademicServiceStaff(user);
+    private boolean isAllowedToAccess(final Event event, final Account account) {
+        return isOwner(event, account) || isAcademicServiceStaff(Authenticate.getUser());
     }
 
-    private boolean isOwner(final Event event, final User user) {
-        final Person person = event == null ? null : event.getPerson();
-        return user != null && user == person.getUser();
+    private boolean isOwner(final Event event, final Account account) {
+        return accessControlService.isEventOwner(event, account);
     }
 
     static boolean isAllowedToAccess(final User user) {
